@@ -101,13 +101,21 @@ function getElementProperties(el) {
       obj[propName] = data
       return
     }
-    
+
+    // Special case: contentEditable
+    // 'inherit' is the default, and setting it in vdom all the time causes problems
+    // as a workaround, don't store it unless it's been set to something other than
+    // 'inherit'.
+    if("contentEditable" == propName) {
+      if(el[propName] == "inherit") return
+    }
+
     // Special case: attributes
-    // some properties are only accessible via .attributes, so 
+    // some properties are only accessible via .attributes, so
     // that's what we'd do, if vdom-create-element could handle this.
     if("attributes" == propName) return
     if("tabIndex" == propName && el.tabIndex === -1) return
-    
+
 
     // default: just copy the property
     obj[propName] = el[propName]
